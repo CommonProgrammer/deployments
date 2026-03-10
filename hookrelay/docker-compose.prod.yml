@@ -18,9 +18,9 @@ services:
     image: postgres:14.4
     container_name: hookrelay-postgres
     restart: unless-stopped
+    env_file: .env.prod
     environment:
       POSTGRES_USER: hookrelay
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hookrelay-prod-change-me}
       POSTGRES_DB: hookrelay
     volumes:
       - postgres-data:/var/lib/postgresql/data
