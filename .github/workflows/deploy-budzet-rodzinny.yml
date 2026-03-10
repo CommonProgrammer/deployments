@@ -1,0 +1,23 @@
+name: Deploy Budzet Rodzinny
+
+on:
+  repository_dispatch:
+    types: [deploy-budzet-rodzinny]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd /home/budzet-rodzinny
+            git pull origin main
+            docker compose -f docker-compose.prod.yml up --build -d
+            sleep 10
+            curl -sf http://localhost:3000/health && echo 'Deploy OK' || echo 'HEALTH CHECK FAILED'
